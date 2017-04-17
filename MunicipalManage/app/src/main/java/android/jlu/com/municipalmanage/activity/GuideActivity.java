@@ -9,10 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -65,7 +63,7 @@ public class GuideActivity extends Activity {
                         "is_user_guide_showed", true);
                 boolean isUserLogined = PreferenceUtils.getBoolean(GuideActivity.this,
                         "is_user_logined", false);
-                if (isUserLogined) {
+                if (!isUserLogined) {
                     //进入登录界面
                     startActivity(new Intent(GuideActivity.this, LoginActivity.class));
                 } else {

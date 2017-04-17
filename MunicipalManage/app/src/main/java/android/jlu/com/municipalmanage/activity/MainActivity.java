@@ -1,17 +1,15 @@
 package android.jlu.com.municipalmanage.activity;
 
 import android.jlu.com.municipalmanage.R;
-import android.jlu.com.municipalmanage.base.AppActivity;
-import android.jlu.com.municipalmanage.base.BaseFragment;
 import android.jlu.com.municipalmanage.fragment.ContactsFragment;
 import android.jlu.com.municipalmanage.fragment.HomeFragment;
 import android.jlu.com.municipalmanage.fragment.TasksFragment;
 import android.jlu.com.municipalmanage.fragment.UserMainFragment;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.ashokvarma.bottomnavigation.BadgeItem;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -74,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 .addItem(mTaskBtnItem)
                 .addItem(mContactsBtnItem)
                 .addItem(mUserMainBtnItem)
-                .setFirstSelectedPosition(0)
+                .setFirstSelectedPosition(3)//默认
                 .initialise();
 
         mBottomNavigationBar.setTabSelectedListener(this);
@@ -93,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     private void setDefaultFragment() {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.layFrame, fragmentLists.get(0));
+        transaction.replace(R.id.layFrame, fragmentLists.get(3));//默认
         transaction.commit();
     }
 
@@ -101,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
         ArrayList<Fragment> fragments = new ArrayList<>();
 
         fragments.add(HomeFragment.newInstance("Home"));
-        fragments.add(ContactsFragment.newInstance("Contacts"));
         fragments.add(TasksFragment.newInstance("Records"));
+        fragments.add(ContactsFragment.newInstance("Contacts"));
         fragments.add(UserMainFragment.newInstance("UserMain"));
         return fragments;
     }
@@ -115,7 +113,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 FragmentTransaction ft = fm.beginTransaction();
                 Fragment fragment = fragmentLists.get(position);
                 if (fragment.isAdded()) {
-                    ft.replace(R.id.layFrame, fragment);
+                 //   ft.replace(R.id.layFrame, fragment);
+                    ft.show(fragment);
                 } else {
                     ft.add(R.id.layFrame, fragment);
                 }
@@ -135,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 Fragment fragment = fragmentLists.get(position);
-                ft.remove(fragment);
+                ft.hide(fragment);
                 ft.commitAllowingStateLoss();
 
 //                Toast.makeText(MainActivity.this, "onTabUnselected: " + position, Toast.LENGTH_SHORT).show();

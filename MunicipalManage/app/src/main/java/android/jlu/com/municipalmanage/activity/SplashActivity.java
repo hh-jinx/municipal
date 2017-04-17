@@ -32,15 +32,22 @@ public class SplashActivity extends Activity {
             @Override
             public void run() {
                 //由于登陆的问题，后面确定是进入主界面还是登陆界面
-                enterMainActivity();
+                boolean isUserLogined = PreferenceUtils.getBoolean(SplashActivity.this,
+                        "is_user_logined", false);
+                if (!isUserLogined) {
+                    //进入登录界面
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                    finish();
+                } else {
+                    //进入主界面
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    finish();
+                }
+
             }
         }, 2000);
 
     }
 
-    private void enterMainActivity() {
 
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
-    }
 }

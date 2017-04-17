@@ -9,10 +9,11 @@ import android.content.SharedPreferences;
 
 public class PreferenceUtils {
 
+    //保存在手机里的文件名
     public static final String PREF_NAME = "config";
 
     public static boolean getBoolean(Context context, String key, boolean defaultValue) {
-
+        //获得SharedPreferences对象
         SharedPreferences sp = context.
                 getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return sp.getBoolean(key, defaultValue);
@@ -33,11 +34,11 @@ public class PreferenceUtils {
 
     }
 
-    public static void setString(Context context, String key, boolean value) {
+    public static void setString(Context context, String key, String value) {
 
         SharedPreferences sp = context.
                 getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        sp.edit().putBoolean(key, value).commit();
+        sp.edit().putString(key, value).apply();
     }
 
 

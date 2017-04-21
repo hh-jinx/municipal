@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/pop_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#3b3b3b">
+
+        <ImageView
+            android:id="@+id/iv_pop_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:background="@mipmap/ic_launcher_round"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_pop_title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="分类选择"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:id="@+id/pop_framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/pop_relativelayout">
+
+        <ListView
+            android:id="@+id/lv_one"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#e4e4e4"
+            android:divider="@null"></ListView>
+
+        <ListView
+            android:id="@+id/lv_two"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#e4e4e4"
+            android:divider="@null"
+            android:visibility="gone"></ListView>
+
+    </FrameLayout>
+
+
+</RelativeLayout>

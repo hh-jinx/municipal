@@ -1,8 +1,10 @@
 package android.jlu.com.municipalmanage.fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.jlu.com.municipalmanage.R;
+import android.jlu.com.municipalmanage.activity.ReportActivity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -39,7 +41,7 @@ public class HomeFragment extends BaseFragment1 {
 
     public LocationClient mLocationClient;
 
-    private Button find_button,repair_button;
+    private Button find_button, repair_button;
 
     //显示地图
     private MapView mapView;
@@ -47,7 +49,7 @@ public class HomeFragment extends BaseFragment1 {
     //地图的控制器
     private BaiduMap baiduMap;
 
-    private boolean isFirstLocate=true ;
+    private boolean isFirstLocate = true;
 
 
     public static BaseFragment1 newInstance(String name) {
@@ -63,7 +65,7 @@ public class HomeFragment extends BaseFragment1 {
     public void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        Log.d("aaa","onCreate()");
+        Log.d("aaa", "onCreate()");
 
     }
 
@@ -72,10 +74,10 @@ public class HomeFragment extends BaseFragment1 {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //定位只在初始化时候执行一次
-        isFirstLocate=true ;
+        isFirstLocate = true;
         mLocationClient = new LocationClient(getActivity().getApplicationContext());
         mLocationClient.registerLocationListener(new MyLocationListener());
-        Log.d("aaa","onCreateview");
+        Log.d("aaa", "onCreateview");
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         //获取按钮
         find_button = (Button) view.findViewById(R.id.find_button);
@@ -84,6 +86,8 @@ public class HomeFragment extends BaseFragment1 {
         find_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                startActivity(new Intent(getActivity(), ReportActivity.class));
 
             }
         });
@@ -116,7 +120,7 @@ public class HomeFragment extends BaseFragment1 {
             permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
         if (!permissionList.isEmpty()) {
-            String [] permissions = permissionList.toArray(new String[permissionList.size()]);
+            String[] permissions = permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(getActivity(), permissions, 1);
         } else {
             requestLocation();
@@ -133,20 +137,21 @@ public class HomeFragment extends BaseFragment1 {
         locationBuilder.longitude(location.getLongitude());
         MyLocationData locationData = locationBuilder.build();
         baiduMap.setMyLocationData(locationData);
-        Toast.makeText(getActivity(),"你现在"+location.getLocationDescribe(),Toast.LENGTH_SHORT).show();
-        if(location.getLocType()!= 161){
-        Toast.makeText(getActivity(),"错误代码"+ location.getLocType() ,Toast.LENGTH_SHORT).show();}
+//        Toast.makeText(getActivity(), "你现在" + location.getLocationDescribe(), Toast.LENGTH_SHORT).show();
+        if (location.getLocType() != 161) {
+//            Toast.makeText(getActivity(), "错误代码" + location.getLocType(), Toast.LENGTH_SHORT).show();
+        }
         MyLocationConfiguration config = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL, true, null);
         baiduMap.setMyLocationConfiguration(config);
         if (isFirstLocate) {
             //获取地址信息   getAddStr  位置语义化信息  location.getLocationDescribe()
-            int error = location.getLocType ();
-            Log.d("error",""+error);
-            Log.d("error",location.getLocType()+"");
-            Log.d("error",location.getAddrStr());
-            Log.d("error",location.getLocationDescribe());
-            Log.d("error",SDKInitializer.getCoordType()+"");
-            Log.d("error","获取海拔高度信息，单位米"+location.getAltitude());
+            int error = location.getLocType();
+            Log.d("error", "" + error);
+            Log.d("error", location.getLocType() + "");
+            Log.d("error", location.getAddrStr());
+            Log.d("error", location.getLocationDescribe());
+            Log.d("error", SDKInitializer.getCoordType() + "");
+            Log.d("error", "获取海拔高度信息，单位米" + location.getAltitude());
             //获取经纬度定位到地图上
             LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
             MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(ll);
@@ -154,10 +159,9 @@ public class HomeFragment extends BaseFragment1 {
             //设置缩放级别（3-19）越大越精细
             update = MapStatusUpdateFactory.zoomTo(18f);
             baiduMap.animateMapStatus(update);
-            isFirstLocate=false;
+            isFirstLocate = false;
 
         }
-
 
 
     }
@@ -167,7 +171,7 @@ public class HomeFragment extends BaseFragment1 {
         mLocationClient.start();
     }
 
-    private void initLocation(){
+    private void initLocation() {
         LocationClientOption option = new LocationClientOption();
 
         option.setScanSpan(5000);//位置更新时间间隔
@@ -179,7 +183,7 @@ public class HomeFragment extends BaseFragment1 {
 
     @Override
     public void onResume() {
-        Log.d("aaa","onResume");
+        Log.d("aaa", "onResume");
         super.onResume();
         mapView.onResume();
 
@@ -187,14 +191,14 @@ public class HomeFragment extends BaseFragment1 {
 
     @Override
     public void onPause() {
-        Log.d("aaa","onPause");
+        Log.d("aaa", "onPause");
         super.onPause();
         mapView.onPause();
     }
 
     @Override
     public void onDestroy() {
-        Log.d("aaa","onDestroy");
+        Log.d("aaa", "onDestroy");
         super.onDestroy();
         mLocationClient.stop();
         mapView.onDestroy();
@@ -209,14 +213,14 @@ public class HomeFragment extends BaseFragment1 {
                 if (grantResults.length > 0) {
                     for (int result : grantResults) {
                         if (result != PackageManager.PERMISSION_GRANTED) {
-                            Toast.makeText(getActivity(), "必须同意所有权限才能使用本程序", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getActivity(), "必须同意所有权限才能使用本程序", Toast.LENGTH_SHORT).show();
                             getActivity().finish();
                             return;
                         }
                     }
                     requestLocation();
                 } else {
-                    Toast.makeText(getActivity(), "发生未知错误", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "发生未知错误", Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 }
                 break;

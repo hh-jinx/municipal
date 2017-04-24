@@ -11,11 +11,11 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:src="@mipmap/ic_launcher_round" />
+            android:src="@drawable/report_title" />
 
         <TextView
             android:layout_width="match_parent"
@@ -62,7 +62,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="吉林大学"
             android:textSize="16dp" />
 
     </LinearLayout>
@@ -101,7 +100,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:gravity="center"
-            android:hint="点击选择类型"
+            android:text="点击左侧选择类型"
             android:textSize="16dp" />
 
     </LinearLayout>
@@ -173,7 +172,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_centerHorizontal="true"
-                android:background="@mipmap/ic_launcher_round" />
+                android:background="@drawable/report_take_photo" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -202,7 +201,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_centerHorizontal="true"
-                android:background="@mipmap/ic_launcher_round" />
+                android:background="@drawable/report_take_video" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -236,10 +235,10 @@
 
             <ImageView
                 android:id="@+id/iv_photo_show"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
                 android:layout_centerHorizontal="true"
-                android:background="@mipmap/ic_launcher_round"
+                android:background="@drawable/close"
                 android:clickable="true" />
 
             <TextView
@@ -267,10 +266,10 @@
 
             <ImageView
                 android:id="@+id/iv_video_screenshot"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
                 android:layout_centerHorizontal="true"
-                android:background="@mipmap/ic_launcher_round"
+                android:background="@drawable/close"
                 android:clickable="true" />
 
             <TextView
@@ -292,9 +291,9 @@
         android:layout_marginTop="20dp"
         android:background="@color/color_4e3d31" />
 
-    <TextView
-        android:id="@+id/login"
-        android:layout_width="fill_parent"
+    <Button
+        android:id="@+id/upload_button"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_below="@id/usercode_layout"
         android:layout_marginTop="10dp"

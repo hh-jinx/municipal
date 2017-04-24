@@ -24,10 +24,10 @@ public class ContactsFragment extends BaseFragment1{
     private ContactsAdapter mAdapter;
     private List<Contacts> mContactses = new ArrayList<>();
 
-    public static BaseFragment1 newInstance(String name) {
+    public static ContactsFragment newInstance(String name) {
         Bundle args = new Bundle();
         args.putString("name", name);
-        BaseFragment1 fragment = new ContactsFragment();
+        ContactsFragment fragment = new ContactsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,11 +49,28 @@ public class ContactsFragment extends BaseFragment1{
 
     private void updateUI() {
         //初始化数据
-        Contacts contacts1 = new Contacts("Bob","186xxxxxxxx");
-        Contacts contacts2 = new Contacts("Echo","157xxxxxxxx");
-        Contacts contacts3 = new Contacts("Alan","131xxxxxxxx");
+        Contacts contacts1 = new Contacts("Bob","156-9348-7221");
+        Contacts contacts2 = new Contacts("Swingman","157-5430-8672");
+        Contacts contacts3 = new Contacts("Alan","186-5885-0447");
+
         mContactses.add(contacts1);
         mContactses.add(contacts2);
+        mContactses.add(contacts3);
+        mContactses.add(contacts3);
+        mContactses.add(contacts2);
+        mContactses.add(contacts3);
+        mContactses.add(contacts3);
+        mContactses.add(contacts2);
+        mContactses.add(contacts3);
+        mContactses.add(contacts3);
+        mContactses.add(contacts2);
+        mContactses.add(contacts3);
+        mContactses.add(contacts3);
+        mContactses.add(contacts2);
+        mContactses.add(contacts3);
+        mContactses.add(contacts3);
+        mContactses.add(contacts2);
+        mContactses.add(contacts3);
         mContactses.add(contacts3);
         mAdapter = new ContactsAdapter(mContactses);
         contactsRecylerView.setAdapter(mAdapter);

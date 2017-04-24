@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <TextView
+            android:textSize="20sp"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:text="时间"
+            android:textColor="@color/black"
+            android:gravity="center"/>
+        <TextView
+            android:textSize="20sp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:textColor="@color/black"
+            android:text="地址"
+            android:gravity="center"/>
+        <TextView
+            android:textSize="20sp"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:textColor="@color/black"
+            android:text="类型"
+            android:gravity="center"/>
+        <TextView
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="@color/black"
+            android:text="具体描述"
+            android:gravity="center"/>
+
+    </LinearLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/task_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+</LinearLayout>

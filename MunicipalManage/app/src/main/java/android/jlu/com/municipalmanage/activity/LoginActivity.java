@@ -3,8 +3,10 @@ package android.jlu.com.municipalmanage.activity;
 
 import android.content.Intent;
 import android.jlu.com.municipalmanage.R;
+import android.jlu.com.municipalmanage.baseclass.UriSet;
+import android.jlu.com.municipalmanage.baseclass.User;
 import android.jlu.com.municipalmanage.utils.PreferenceUtils;
-import android.jlu.com.municipalmanage.utils.RetrofitUtil;
+import android.jlu.com.municipalmanage.utils.RetrofitLoginUtil;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -16,11 +18,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by beyond on 17/4/12.
@@ -51,7 +54,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
         username = (EditText) findViewById(R.id.username);
         // 监听文本框内容变化
-       username.addTextChangedListener(new TextWatcher() {
+        username.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
@@ -160,25 +163,22 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     Toast.makeText(LoginActivity.this,"账号密码不能为空",Toast.LENGTH_SHORT).show();
                 }else {
                     Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://49.140.76.93:8080/MunicipalServer/clientPackage/")
-                            .addConverterFactory(ScalarsConverterFactory.create())
+                            .baseUrl(UriSet.LOGIN_URI)
+                            .addConverterFactory(GsonConverterFactory.create())
                             .build();
-                    RetrofitUtil retrofitUtil = retrofit.create(RetrofitUtil.class);
-                    Call<String> call =retrofitUtil.Login(user,pass);
-                    call.enqueue(new Callback<String>() {
+                    RetrofitLoginUtil retrofitLoginUtil = retrofit.create(RetrofitLoginUtil.class);
+                    Call<User> call = retrofitLoginUtil.Login(user,pass);
+                    call.enqueue(new Callback<User>() {
                         @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
+                        public void onResponse(Call<User> call, Response<User> response) {
+
+
                             //返回值0账号密码错误，1,2代表成功登录
-                            if (response.body().equals("0")){
+                            if (response.body().getResult()==0){
                                 Toast.makeText(LoginActivity.this,"账号密码错误",Toast.LENGTH_SHORT).show();
                             }else {
                                 Toast.makeText(LoginActivity.this,"登录成功",Toast.LENGTH_SHORT).show();
-                                //保持登录状态
-                                PreferenceUtils.setBoolean(LoginActivity.this,
-                                        "is_user_logined", true);
-                                //保存用户名
-                                PreferenceUtils.setString(LoginActivity.this,
-                                        "username", user);
+                                initUserInfor(response.body().getEmpBean());
                                 startActivity(new Intent(LoginActivity.this,MainActivity.class));
                                 finish();
                             }
@@ -186,7 +186,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                         }
 
                         @Override
-                        public void onFailure(Call<String> call, Throwable t) {
+                        public void onFailure(Call<User> call, Throwable t) {
                             Toast.makeText(LoginActivity.this,"网络错误，登录失败",Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -230,6 +230,15 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     }
 
 
+    //登录成功获取信息
+    private void initUserInfor(User.EmpBeanBean empBeanBean){
+        //保持登录状态
+        PreferenceUtils.setBoolean(LoginActivity.this,"is_user_logined", true);
+        //b保存用户信息
+        PreferenceUtils.setString(this,"USER_NAME",empBeanBean.getName());
+        PreferenceUtils.setString(this,"USER_PHONE",empBeanBean.getPhone());
+        PreferenceUtils.setString(this,"USER_TITLE",empBeanBean.getTitle());
+    }
 
 }
 

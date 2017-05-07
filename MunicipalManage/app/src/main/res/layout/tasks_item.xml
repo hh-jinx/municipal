@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="80dp"
+              android:orientation="vertical"
+             >
+
+ <LinearLayout
+     android:layout_width="match_parent"
+     android:layout_height="1dp">
+     <View
+         android:layout_width="match_parent"
+         android:layout_height="1dp"
+         android:background="@color/grey"/>
+ </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="79dp">
+
+ <TextView
+     android:id="@+id/find_time"
+     android:textSize="15sp"
+     android:layout_width="79dp"
+     android:layout_height="match_parent"
+     android:text="2013-12-12 23:32:22"
+     android:gravity="center_vertical"/>
+ <View
+     android:background="@color/grey"
+     android:layout_width="1dp"
+     android:layout_height="80dp"/>
+ <TextView
+     android:id="@+id/find_address"
+     android:textSize="15sp"
+     android:layout_width="100dp"
+     android:layout_height="match_parent"
+     android:gravity="center"
+     android:text="吉林大学南苑二公寓520寝室"
+     />
+ <View
+     android:background="@color/grey"
+     android:layout_width="1dp"
+     android:layout_height="80dp"/>
+ <TextView
+     android:id="@+id/task_type"
+     android:textSize="15sp"
+     android:layout_width="60dp"
+     android:layout_height="79dp"
+     android:gravity="center"
+     android:text="路灯损坏"
+     />
+ <View
+     android:background="@color/grey"
+     android:layout_width="1dp"
+     android:layout_height="80dp"/>
+
+ <TextView
+     android:id="@+id/task_desc"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:gravity="center"
+     android:text="这个路灯灯泡被人打坏了"
+     android:textSize="15sp"
+     />
+</LinearLayout>
+
+
+</LinearLayout>

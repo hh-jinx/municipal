@@ -1,5 +1,7 @@
 package android.jlu.com.municipalmanage.utils;
 
+import android.jlu.com.municipalmanage.baseclass.User;
+
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -14,8 +16,8 @@ import retrofit2.http.POST;
  *     version: 1.0
  * </pre>
  */
-public interface RetrofitUtil {
+public interface RetrofitLoginUtil {
     @POST("clientLogin.action")
     @FormUrlEncoded
-    Call<String> Login(@Field("manager.name") String username, @Field("manager.pass") String password );
+    Call<User> Login(@Field("manager.name") String username, @Field("manager.pass") String password);
 }

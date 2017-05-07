@@ -6,13 +6,12 @@ import android.os.Environment;
 
 import com.baidu.mapapi.SDKInitializer;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import mabeijianxi.camera.VCamera;
-import mabeijianxi.camera.util.DeviceUtils;
 
 public class MyApplication extends Application {
 
@@ -45,12 +44,15 @@ public class MyApplication extends Application {
             .getExternalStorageDirectory() + "/Municipal/";
 
     //照片
-    public static final String PHOTO_PATH = MY_CACHE_PATH + "/photo/";
+   // public static  String PHOTO_PATH = Environment
+     //       .getExternalStorageDirectory().getAbsolutePath()+ "/photo/";
 
     @Override
     public void onCreate() {
         super.onCreate();
         SDKInitializer.initialize(getApplicationContext());
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
         initSmallVideo(this);
     }
 

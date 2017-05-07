@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.jlu.com.municipalmanage.R;
+import android.jlu.com.municipalmanage.activity.RepairUploadActivity;
 import android.jlu.com.municipalmanage.activity.ReportActivity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -42,6 +42,8 @@ public class HomeFragment extends BaseFragment1 {
     public LocationClient mLocationClient;
 
     private Button find_button, repair_button;
+   //分别为经度纬度地址
+    private String longitude,latitude,address;
 
     //显示地图
     private MapView mapView;
@@ -52,11 +54,11 @@ public class HomeFragment extends BaseFragment1 {
     private boolean isFirstLocate = true;
 
 
-    public static BaseFragment1 newInstance(String name) {
+    public static HomeFragment newInstance(String name) {
 
         Bundle args = new Bundle();
         args.putString("name", name);
-        BaseFragment1 fragment = new HomeFragment();
+        HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,7 +74,7 @@ public class HomeFragment extends BaseFragment1 {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //定位只在初始化时候执行一次
         isFirstLocate = true;
         mLocationClient = new LocationClient(getActivity().getApplicationContext());
@@ -86,8 +88,12 @@ public class HomeFragment extends BaseFragment1 {
         find_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                startActivity(new Intent(getActivity(), ReportActivity.class));
+                //向下一个活动传递
+                Intent intent = new Intent(getActivity(),ReportActivity.class);
+                intent.putExtra("longitude",longitude);
+                intent.putExtra("latitude",latitude);
+                intent.putExtra("address",address);
+                startActivity(intent);
 
             }
         });
@@ -96,7 +102,7 @@ public class HomeFragment extends BaseFragment1 {
         repair_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+              startActivity(new Intent(getActivity(), RepairUploadActivity.class));
             }
         });
 
@@ -130,6 +136,9 @@ public class HomeFragment extends BaseFragment1 {
 
     //定位到自己的位置
     private void navigateTo(BDLocation location) {
+        longitude=location.getLongitude()+"";
+        latitude = location.getLatitude()+"";
+        address = location.getLocationDescribe();
         //当前位置显示在地图上
         MyLocationData.Builder locationBuilder = new MyLocationData.
                 Builder();

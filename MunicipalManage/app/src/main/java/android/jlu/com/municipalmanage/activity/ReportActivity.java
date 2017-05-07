@@ -1,7 +1,7 @@
 package android.jlu.com.municipalmanage.activity;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,18 +9,25 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.jlu.com.municipalmanage.R;
 import android.jlu.com.municipalmanage.base.BasePopWindow;
+import android.jlu.com.municipalmanage.baseclass.UriSet;
 import android.jlu.com.municipalmanage.utils.MyApplication;
+import android.jlu.com.municipalmanage.utils.PreferenceUtils;
+import android.jlu.com.municipalmanage.utils.RetrofitUploadUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -28,13 +35,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import mabeijianxi.camera.MediaRecorderActivity;
 import mabeijianxi.camera.model.AutoVBRMode;
 import mabeijianxi.camera.model.MediaRecorderConfig;
 import mabeijianxi.camera.util.FileUtils;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 
 /**
@@ -42,11 +57,16 @@ import mabeijianxi.camera.util.FileUtils;
  */
 
 public class ReportActivity extends Activity {
+    public static final int TAKE_PHOTO = 1;
+    public static final int CROP_PHOTO = 2;
+    private Uri imageUri;
+    private File outputImage;
+
     //照片路径
-    private String PHOTO_PIC_PATH;
-    private String PHOTO_COMPRESS_PATH;
+    private String PHOTO_PIC_PATH="";
+
     //视频
-    private String videoUri;
+    private String videoUri="";
     //视频第一帧
     private String videoScreenshot;
 
@@ -64,23 +84,114 @@ public class ReportActivity extends Activity {
     private ImageView iv_take_photo;
     private ImageView iv_take_video;
     private ImageView iv_photo_show;
-
+    private TextView tv_address;
     private ImageView iv_video_screenshot;
-
+    private EditText et_description;
     private AlertDialog dialog;
 
-
+    //上传按钮
+    private Button uploadButton;
+    //分别为经度,纬度,地址,问题描述，发现者，时间，类型
+    private String longitude,latitude,address,site_desc,finder,type;
+    //图片，视频
+    private File upload_photo,upload_video;
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private String find_time = format.format(new java.util.Date());
+    private static final String TAG = "ReportActivity";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
+        tv_address = (TextView) findViewById(R.id.tv_address);
+        et_description = (EditText) findViewById(R.id.et_description);
         tv_select_type = (TextView) findViewById(R.id.tv_select_type);
         iv_take_photo = (ImageView) findViewById(R.id.iv_take_photo);
         iv_take_video = (ImageView) findViewById(R.id.iv_take_video);
         iv_photo_show = (ImageView) findViewById(R.id.iv_photo_show);
-
+        tv_question_type =(TextView) findViewById(R.id.tv_question_type);
         iv_video_screenshot = (ImageView) findViewById(R.id.iv_video_screenshot);
+        uploadButton = (Button)findViewById(R.id.upload_button);
+
+        //获取传来的数据
+        Intent intent =getIntent();
+        longitude = intent.getStringExtra("longitude");
+        latitude = intent.getStringExtra("latitude");
+        address = intent.getStringExtra("address");
+        tv_address.setText(address);
+        Toast.makeText(this,address, Toast.LENGTH_SHORT).show();
+        finder = PreferenceUtils.getString(this,"USER_NAME","wowowo");
+
+
+        //上传数据
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                site_desc = et_description.getText().toString();
+                type = tv_question_type.getText().toString();
+
+                Log.d(TAG, "onClick: "+PHOTO_PIC_PATH);
+                Log.d(TAG, "onClick: "+videoUri);
+
+                if(site_desc.equals("")||type .equals("")){
+                    Toast.makeText(ReportActivity.this,
+                            "请确定所有信息均填入",Toast.LENGTH_SHORT).show();
+                }else if(PHOTO_PIC_PATH.equals("")||videoUri.equals("")){
+                    Toast.makeText(ReportActivity.this,
+                            "请确定照片和视频均拍摄",Toast.LENGTH_SHORT).show();
+                }else {
+                    upload_photo = new File(PHOTO_PIC_PATH);
+                    upload_video = new File(videoUri);
+                    //上传
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl(UriSet.UPLOAD_URI)
+                                .addConverterFactory(ScalarsConverterFactory.create())
+                                .build();
+                        RetrofitUploadUtil retrofitUploadUtil = retrofit.create(RetrofitUploadUtil.class);
+                        RequestBody requestFile1 = RequestBody.create(MediaType.parse("image/jpeg"), upload_photo);
+                        RequestBody requestFile2 = RequestBody.create(MediaType.parse("multipart/form-data"), upload_video);
+                        MultipartBody.Part[]  file = new MultipartBody.Part[2];
+                        file[0] = MultipartBody.Part.createFormData("upload", upload_photo.getName(), requestFile1);
+                        file[1] = MultipartBody.Part.createFormData("upload", upload_video.getName(), requestFile2);
+                        //  file[1] = MultipartBody.Part.createFormData("upload", "test.mp4", requestFile2);
+                        final ProgressDialog dialog = new ProgressDialog(ReportActivity.this);
+                        dialog.setCancelable(false);// 设置是否可以通过点击Back键取消
+                        dialog.setCanceledOnTouchOutside(false);// 设置在点击Dialog外是否取消Dialog进度条
+                        // 设置提示的title的图标，默认是没有的，如果没有设置title的话只设置Icon是不会显示图标的
+                        dialog.setTitle("提示");
+                        dialog.setMessage("正在上传");
+                        dialog.show();
+                        Call<String> call = retrofitUploadUtil.updateImage(file,
+                                RequestBody.create(null, longitude),
+                                RequestBody.create(null, latitude),
+                                RequestBody.create(null, address),
+                                RequestBody.create(null, site_desc),
+                                RequestBody.create(null, finder),
+                                RequestBody.create(null, find_time),
+                                RequestBody.create(null, type));
+
+                        call.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                dialog.dismiss();
+                                Toast.makeText(ReportActivity.this,"提示信息："+response.body().toString(),Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                dialog.dismiss();
+                                Toast.makeText(ReportActivity.this,"网络错误，请检查网络设置",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+                }
+
+            }
+        });
+
 
         tv_select_type.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,12 +201,36 @@ public class ReportActivity extends Activity {
             }
         });
 
+        iv_take_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                PHOTO_PIC_PATH = Environment
+                        .getExternalStorageDirectory().getAbsolutePath()+ "/municipal_photo.jpg";
+                outputImage = new File(PHOTO_PIC_PATH);
+                // 创建File对象，储存拍照后的照片，存在根目录下
+                try {
+                    if (outputImage.exists()) {
+                        outputImage.delete();
+                    }
+                    outputImage.createNewFile();
+                } catch (Exception e) {
+                    e.printStackTrace();// TODO: handle exception
+                }
+                imageUri = Uri.fromFile(outputImage);
+                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(intent, TAKE_PHOTO);// 启动相机程序
+
+
+            }
+        });
         iv_photo_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (PHOTO_COMPRESS_PATH != null) {
+                if (!PHOTO_PIC_PATH.equals("")) {
                     Intent intent = new Intent(ReportActivity.this, PhotoShowActivity.class);
-                    intent.putExtra("PHOTO_COMPRESS_PATH", PHOTO_COMPRESS_PATH);
+                    intent.putExtra("PHOTO_COMPRESS_PATH", PHOTO_PIC_PATH);
                     startActivity(intent);
                 } else {
                     //还没拍照
@@ -116,7 +251,7 @@ public class ReportActivity extends Activity {
 //                        .setVelocity(BaseMediaBitrateConfig.Velocity.ULTRAFAST)
                         )
                         .smallVideoWidth(480)
-                        .smallVideoHeight(360)
+                        .smallVideoHeight(580)
                         .recordTimeMax(5 * 1000)
                         .maxFrameRate(20)
                         .captureThumbnailsTime(1)
@@ -137,18 +272,7 @@ public class ReportActivity extends Activity {
         });
 
 
-        iv_take_photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                PHOTO_PIC_PATH =
-                        MyApplication.PHOTO_PATH + String.valueOf(System.currentTimeMillis()) + ".png";
-                Uri uri = Uri.fromFile(new File(PHOTO_PIC_PATH));
-                //为拍摄的图片指定一个存储的路径
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                startActivityForResult(intent, 6);
-            }
-        });
+
 
         iv_video_screenshot.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,7 +300,7 @@ public class ReportActivity extends Activity {
         if (dialog == null) {
             dialog = new AlertDialog.Builder(this)
                     .setTitle(R.string.hint)
-                    .setMessage(R.string.record_camera_exit_dialog_message)
+                    .setMessage("是否放弃保存的信息")
                     .setNegativeButton(
                             R.string.record_camera_cancel_dialog_no,
                             new DialogInterface.OnClickListener() {
@@ -196,8 +320,7 @@ public class ReportActivity extends Activity {
                                     Toast.makeText(ReportActivity.this,
                                             "确定放弃", Toast.LENGTH_SHORT).show();
                                     FileUtils.deleteDir(getIntent().getStringExtra(MediaRecorderActivity.OUTPUT_DIRECTORY));
-                                    FileUtils.deleteFile(PHOTO_PIC_PATH);
-                                    FileUtils.deleteFile(PHOTO_COMPRESS_PATH);
+                                    FileUtils.deleteFile(videoUri);
                                     finish();
                                 }
                             })
@@ -217,103 +340,49 @@ public class ReportActivity extends Activity {
     }
 
 
-    // 获取压缩后的图片地址
-    // 进行尺寸压缩之后再进行质量压缩
-    public String getCompressedPath(Context context, String path) {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;                                       // 获取图片的宽高，图片并没有加载进内存
-            BitmapFactory.decodeFile(path, options);
-
-            int originWidth = options.outWidth;
-            int originHeight = options.outHeight;
-            // 目标尺寸的宽高根据具体情况来定
-            float targetHeight = 1024f;
-            float targetWidth = 1024f;
-            int rate = 1;                                                             // rate=1表示不缩放
-            if (originWidth >= originHeight && originWidth > targetWidth) {           // 如果宽度大的话根据宽度固定大小缩放
-                rate = (int) (options.outWidth / targetWidth);
-            } else if (originWidth < originHeight && originHeight > targetHeight) {   // 如果高度高的话根据宽度固定大小缩放
-                rate = (int) (options.outHeight / targetHeight);
-            }
-            if (rate <= 0) rate = 1;
-
-            options.inSampleSize = rate;                                              // 设置缩放比例
-            options.inJustDecodeBounds = false;                                       // 这里一定要将其设置回false，因为之前我们将其设置成了true
-
-            Bitmap bitmap = BitmapFactory.decodeFile(path, options);
-
-            String name = String.valueOf(System.currentTimeMillis());
-//            File uploadImageDir = new File(getUploadImageDir(context));
-//            File uploadImageDir = Environment
-//                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-//
-//            File uploadImageFile = new File(uploadImageDir + "/" + name + ".jpg");    // 压缩后的图片位置
-
-//            File uploadImageDir = new File(
-//                    Environment.getExternalStorageDirectory() + "/photo11/"
-//            );
-            File uploadImageFile = new File(MyApplication.PHOTO_PATH + name + ".jpg");
-
-//            if (!uploadImageDir.exists()) {
-//                uploadImageDir.mkdirs();
-//            } else {
-//                if (uploadImageFile.exists()) {
-//                    uploadImageFile.delete();
-//                }
-//            }
-
-            try {
-                FileOutputStream out = new FileOutputStream(uploadImageFile);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);                  // 进行质量压缩
-                out.flush();
-                out.close();
-                bitmap.recycle();                                                      // 回收bitmap，节省内存
-                Toast.makeText(context, uploadImageFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-                return uploadImageFile.getAbsolutePath();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (OutOfMemoryError e) {
-            e.printStackTrace();
-        }
-        Toast.makeText(context, "null", Toast.LENGTH_SHORT).show();
-        return null;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 5 && resultCode == 10) {
-//            Toast.makeText(ReportActivity.this, "VIDEO", Toast.LENGTH_SHORT).show();
-
-            Intent intent = data;
-            videoUri = intent.getStringExtra(MediaRecorderActivity.VIDEO_URI);
-            videoScreenshot = intent.getStringExtra(MediaRecorderActivity.VIDEO_SCREENSHOT);
-            Bitmap bitmap = BitmapFactory.decodeFile(videoScreenshot);
+        switch (requestCode){
+            case 5:
+                if(resultCode == 10){
+                    Intent intent = data;
+                    videoUri = intent.getStringExtra(MediaRecorderActivity.VIDEO_URI);
+                    videoScreenshot = intent.getStringExtra(MediaRecorderActivity.VIDEO_SCREENSHOT);
+                    Bitmap bitmap = BitmapFactory.decodeFile(videoScreenshot);
 
 //            iv_video_screenshot.setImageBitmap(bitmap);
-            iv_video_screenshot.setBackground(new BitmapDrawable(bitmap));
+                    iv_video_screenshot.setBackground(new BitmapDrawable(bitmap));
+                }
+                break;
+            case TAKE_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    Intent intent = new Intent("com.android.camera.action.CROP");
+                    intent.setDataAndType(imageUri, "image/*");
+                    intent.putExtra("scale", true);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    startActivityForResult(intent, CROP_PHOTO);
+                }
+                break;
+            case CROP_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                        iv_photo_show.setImageBitmap(bitmap);
 
-        } else if (requestCode == 6) {
-
-            Bitmap bitmap1 = BitmapFactory.decodeFile(PHOTO_PIC_PATH);
-            if (bitmap1 != null) {
-                //压缩后的path
-                String path = getCompressedPath(ReportActivity.this, PHOTO_PIC_PATH);
-                PHOTO_COMPRESS_PATH = path;
-                Bitmap bitmap = BitmapFactory.decodeFile(path);
-//                iv_photo_show.setImageBitmap(bitmap);
-                iv_photo_show.setBackground(new BitmapDrawable(bitmap));
-            } else {
-//                Toast.makeText(ReportActivity.this, "PHOTO :" + bitmap1, Toast.LENGTH_SHORT).show();
-            }
+                    } catch (Exception e) {
+                        e.printStackTrace();// TODO: handle exception
+                    }
+                }
+                break;
+            default:
+                break;
 
 
         }
+
+
     }
 
 

@@ -1,5 +1,6 @@
 package android.jlu.com.municipalmanage.activity;
 
+import android.content.pm.ActivityInfo;
 import android.jlu.com.municipalmanage.R;
 import android.jlu.com.municipalmanage.fragment.ContactsFragment;
 import android.jlu.com.municipalmanage.fragment.HomeFragment;
@@ -10,36 +11,49 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-
+import android.support.v7.widget.Toolbar;
 import com.ashokvarma.bottomnavigation.BadgeItem;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
 
     private ArrayList<Fragment> fragmentLists;
     private BadgeItem mTaskNumberBadgeItem;
-
     private BottomNavigationItem mHomeBtnItem, mUserMainBtnItem,
             mTaskBtnItem, mContactsBtnItem;
-
     private BottomNavigationBar mBottomNavigationBar;
+    private  Toolbar toolbar;
+
+    private FragmentManager fManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        fManager = getSupportFragmentManager();
+        if (savedInstanceState != null) {
+            fragmentLists = setFragments();
+        }else {
+            fragmentLists = getFragments();
+        }
         super.onCreate(savedInstanceState);
-
+        //保持竖屏
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setContentView(R.layout.activity_main);
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
         initView();
 
+
+
         initData();
+
+
 
     }
 
     private void initView() {
-        setContentView(R.layout.activity_main);
+
 
         mBottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
 
@@ -52,13 +66,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 );
 
         mHomeBtnItem = new BottomNavigationItem(
-                R.drawable.home, "Home").setActiveColorResource(R.color.orange);
+                R.drawable.home, "Home").setActiveColorResource(R.color.blue);
         mTaskBtnItem = new BottomNavigationItem(
                 R.drawable.tasks, "Task").setActiveColorResource(R.color.blue);
         mContactsBtnItem = new BottomNavigationItem(
-                android.R.drawable.ic_menu_call, "Contacts").setActiveColorResource(R.color.brown);
+                android.R.drawable.ic_menu_call, "Contacts").setActiveColorResource(R.color.blue);
         mUserMainBtnItem = new BottomNavigationItem(
-                R.drawable.usermain, "UserMain").setActiveColorResource(R.color.grey);
+                R.drawable.usermain, "UserMain").setActiveColorResource(R.color.blue);
 
         mTaskNumberBadgeItem = new BadgeItem()
                 .setBorderWidth(4)
@@ -72,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 .addItem(mTaskBtnItem)
                 .addItem(mContactsBtnItem)
                 .addItem(mUserMainBtnItem)
-                .setFirstSelectedPosition(3)//默认
+                .setFirstSelectedPosition(2)//默认
                 .initialise();
 
         mBottomNavigationBar.setTabSelectedListener(this);
@@ -80,19 +94,28 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     }
 
     private void initData() {
-        fragmentLists = getFragments();
         setDefaultFragment();
-
+        toolbar.setTitle(" 地图");
+        toolbar.setLogo(R.drawable.top_map);
+        toolbar.setTitleTextAppearance(this,R.style.Toolbar_TitleText);
     }
 
     /**
      * 设置默认的
      */
     private void setDefaultFragment() {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.layFrame, fragmentLists.get(3));//默认
+        FragmentTransaction transaction = fManager.beginTransaction();
+        transaction.replace(R.id.layFrame, fragmentLists.get(2));//默认
         transaction.commit();
+    }
+
+    private ArrayList<Fragment> setFragments() {
+        ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments.add(fManager.findFragmentByTag(HomeFragment.class.getName()));
+        fragments.add(fManager.findFragmentByTag(TasksFragment.class.getName()));
+        fragments.add(fManager.findFragmentByTag(ContactsFragment.class.getName()));
+        fragments.add(fManager.findFragmentByTag(UserMainFragment.class.getName()));
+        return fragments;
     }
 
     private ArrayList<Fragment> getFragments() {
@@ -109,20 +132,38 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     public void onTabSelected(int position) {
         if (fragmentLists != null) {
             if (position < fragmentLists.size()) {
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
+                FragmentTransaction ft = fManager.beginTransaction();
                 Fragment fragment = fragmentLists.get(position);
                 if (fragment.isAdded()) {
-                 //   ft.replace(R.id.layFrame, fragment);
+                    //   ft.replace(R.id.layFrame, fragment);
                     ft.show(fragment);
                 } else {
-                    ft.add(R.id.layFrame, fragment);
+                    ft.add(R.id.layFrame, fragment,fragment.getClass().getName());
                 }
                 ft.commitAllowingStateLoss();
-                if (position == 1) {
-                    BadgeItem badgeItem = mTaskNumberBadgeItem.hide().setText("0");
-                    mTaskBtnItem.setBadgeItem(badgeItem);
+                switch (position){
+                    case 0 :
+                        toolbar.setTitle(" 地图");
+                        toolbar.setLogo(R.drawable.top_map);
+                        break;
+                    case 1:
+                        toolbar.setTitle(" 问题列表");
+                        toolbar.setLogo(R.drawable.top_task);
+                        BadgeItem badgeItem = mTaskNumberBadgeItem.hide().setText("0");
+                        mTaskBtnItem.setBadgeItem(badgeItem);
+                        break;
+                    case 2 :
+                        toolbar.setTitle(" 联系人");
+                        toolbar.setLogo(R.drawable.top_contacts);
+                        break;
+                    case 3:
+                        toolbar.setTitle(" 个人信息");
+                        toolbar.setLogo(R.drawable.top_person);
+                        break;
+                    default:
+                        break;
                 }
+
             }
         }
     }
@@ -131,8 +172,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     public void onTabUnselected(int position) {
         if (fragmentLists != null) {
             if (position < fragmentLists.size()) {
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
+                FragmentTransaction ft = fManager.beginTransaction();
                 Fragment fragment = fragmentLists.get(position);
                 ft.hide(fragment);
                 ft.commitAllowingStateLoss();

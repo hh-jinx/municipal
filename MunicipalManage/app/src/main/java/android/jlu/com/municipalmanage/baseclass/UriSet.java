@@ -10,9 +10,9 @@ package android.jlu.com.municipalmanage.baseclass;
  * </pre>
  */
 public final class UriSet {
-    public static final String SERVER_URI="http://49.140.87.158:8080/MunicipalServer1/";
-    public static final String LOGIN_URI="http://49.140.87.158:8080/MunicipalServer1/clientPackage/";
-    public static final String UPLOAD_URI="http://49.140.87.158:8080/MunicipalServer1/clientPackage/";
+    public static final String SERVER_URI="http://123.206.54.133:8080/MunicipalServer/";
+    public static final String LOGIN_URI="http://123.206.54.133:8080/MunicipalServer/clientPackage/";
+    public static final String UPLOAD_URI="http://123.206.54.133:8080/MunicipalServer/clientPackage/";
 
 
 

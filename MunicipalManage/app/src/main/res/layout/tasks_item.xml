@@ -5,14 +5,6 @@
               android:orientation="vertical"
              >
 
- <LinearLayout
-     android:layout_width="match_parent"
-     android:layout_height="1dp">
-     <View
-         android:layout_width="match_parent"
-         android:layout_height="1dp"
-         android:background="@color/grey"/>
- </LinearLayout>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="79dp">
@@ -20,10 +12,10 @@
  <TextView
      android:id="@+id/find_time"
      android:textSize="15sp"
-     android:layout_width="79dp"
+     android:layout_width="80dp"
      android:layout_height="match_parent"
      android:text="2013-12-12 23:32:22"
-     android:gravity="center_vertical"/>
+     android:gravity="center"/>
  <View
      android:background="@color/grey"
      android:layout_width="1dp"
@@ -58,10 +50,20 @@
      android:layout_width="match_parent"
      android:layout_height="match_parent"
      android:gravity="center"
-     android:text="这个路灯灯泡被人打坏了"
+     android:text="这个路灯灯泡坏了"
+     android:lines="3"
+     android:ellipsize="end"
      android:textSize="15sp"
      />
 </LinearLayout>
 
+ <LinearLayout
+     android:layout_width="match_parent"
+     android:layout_height="1dp">
+  <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/grey"/>
+ </LinearLayout>
 
 </LinearLayout>

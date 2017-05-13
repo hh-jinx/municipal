@@ -90,7 +90,7 @@ public class TasksFragment extends BaseFragment1 {
         });
     }
         private void refreshList(){
-    getActivity().runOnUiThread(new Runnable() {
+            getActivity().runOnUiThread(new Runnable() {
         @Override
         public void run() {
             initDate();
@@ -137,7 +137,7 @@ public class TasksFragment extends BaseFragment1 {
                     int position = holder.getAdapterPosition();
                     Task.ProBeanBean pro = probeanlist.get(position);
                     Intent intent = new Intent(getActivity(), TaskItemActivity.class);
-                    String time1 = pro.getFind_time().replace("T","");//去除时间格式不对，里面的T
+                    String time1 = pro.getFind_time().replace("T"," ");//去除时间格式不对，里面的T
                     //转化为string
                     String id = String.valueOf(pro.getId());
                     String state = String.valueOf(pro.getPro_state());

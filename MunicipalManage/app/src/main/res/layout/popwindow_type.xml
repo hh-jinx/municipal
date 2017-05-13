@@ -16,7 +16,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:background="@mipmap/ic_launcher_round"
+            android:background="@drawable/logo"
             android:visibility="gone" />
 
         <TextView

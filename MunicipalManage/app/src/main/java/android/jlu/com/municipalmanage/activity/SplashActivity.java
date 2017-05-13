@@ -25,7 +25,7 @@ public class SplashActivity extends Activity {
             return;
         }
 
-        //这里现在有个登陆的问题，登陆后我们怎么处理登陆的状态，什么时候需要再次登陆
+
         setContentView(R.layout.activity_splash);
 
         new Handler().postDelayed(new Runnable() {

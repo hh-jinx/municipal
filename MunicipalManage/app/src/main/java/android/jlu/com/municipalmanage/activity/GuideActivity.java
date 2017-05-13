@@ -30,9 +30,9 @@ public class GuideActivity extends Activity {
 //            R.drawable.guide_1, R.drawable.guide_2, R.drawable.guide_3
 //    };
     private static final int[] mImageIds = new int[]{
-            R.mipmap.ic_launcher_round,
-            R.mipmap.ic_launcher_round,
-            R.mipmap.ic_launcher_round
+            R.drawable.guide_1,
+            R.drawable.guide_2,
+            R.drawable.guide_3
     };
 
 

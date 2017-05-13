@@ -19,7 +19,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,7 +83,7 @@ public class ReportActivity extends Activity {
     private ImageView iv_take_photo;
     private ImageView iv_take_video;
     private ImageView iv_photo_show;
-    private TextView tv_address;
+    private EditText tv_address;
     private ImageView iv_video_screenshot;
     private EditText et_description;
     private AlertDialog dialog;
@@ -103,7 +102,7 @@ public class ReportActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
-        tv_address = (TextView) findViewById(R.id.tv_address);
+        tv_address = (EditText) findViewById(R.id.tv_address);
         et_description = (EditText) findViewById(R.id.et_description);
         tv_select_type = (TextView) findViewById(R.id.tv_select_type);
         iv_take_photo = (ImageView) findViewById(R.id.iv_take_photo);
@@ -130,11 +129,9 @@ public class ReportActivity extends Activity {
 
                 site_desc = et_description.getText().toString();
                 type = tv_question_type.getText().toString();
+                address = tv_address.getText().toString();
 
-                Log.d(TAG, "onClick: "+PHOTO_PIC_PATH);
-                Log.d(TAG, "onClick: "+videoUri);
-
-                if(site_desc.equals("")||type .equals("")){
+                if(site_desc.equals("")||type .equals("")||address.equals("")){
                     Toast.makeText(ReportActivity.this,
                             "请确定所有信息均填入",Toast.LENGTH_SHORT).show();
                 }else if(PHOTO_PIC_PATH.equals("")||videoUri.equals("")){

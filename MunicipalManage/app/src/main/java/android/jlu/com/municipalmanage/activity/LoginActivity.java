@@ -14,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,10 +36,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     private EditText username, password;
     private Button bt_username_clear;
     private Button bt_pwd_clear;
-    private Button forgive_pwd;
     private Button bt_pwd_eye;
     private Button login;
-    private Button register;
     private boolean isOpen = false;
     private static final String TAG = "LoginActivity";
 
@@ -123,11 +122,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         login = (Button) findViewById(R.id.login);
         login.setOnClickListener(this);
 
-        register = (Button) findViewById(R.id.register);
-        register.setOnClickListener(this);
-
-        forgive_pwd = (Button) findViewById(R.id.forgive_pwd);
-        forgive_pwd.setOnClickListener(this);
 
     }
 
@@ -172,7 +166,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
 
-
+                            Log.d(TAG, "onResponse: "+response.body().getResult());
                             //返回值0账号密码错误，1,2代表成功登录
                             if (response.body().getResult()==0){
                                 Toast.makeText(LoginActivity.this,"账号密码错误",Toast.LENGTH_SHORT).show();
@@ -192,15 +186,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     });
                 }
                 break;
-            case R.id.register:
-                // 注册按钮
-                Toast.makeText(LoginActivity.this, "注册", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.forgive_pwd:
-                // 忘记密码按钮
-                Toast.makeText(LoginActivity.this, "忘记密码", Toast.LENGTH_SHORT).show();
-                break;
-
             default:
                 break;
         }

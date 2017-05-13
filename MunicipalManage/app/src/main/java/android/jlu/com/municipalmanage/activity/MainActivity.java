@@ -66,19 +66,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 );
 
         mHomeBtnItem = new BottomNavigationItem(
-                R.drawable.home, "Home").setActiveColorResource(R.color.blue);
+                R.drawable.home, "地图").setActiveColorResource(R.color.blue);
         mTaskBtnItem = new BottomNavigationItem(
-                R.drawable.tasks, "Task").setActiveColorResource(R.color.blue);
+                R.drawable.tasks, "任务").setActiveColorResource(R.color.blue);
         mContactsBtnItem = new BottomNavigationItem(
-                android.R.drawable.ic_menu_call, "Contacts").setActiveColorResource(R.color.blue);
+                android.R.drawable.ic_menu_call, "联系人").setActiveColorResource(R.color.blue);
         mUserMainBtnItem = new BottomNavigationItem(
-                R.drawable.usermain, "UserMain").setActiveColorResource(R.color.blue);
+                R.drawable.usermain, "用户信息").setActiveColorResource(R.color.blue);
 
-        mTaskNumberBadgeItem = new BadgeItem()
-                .setBorderWidth(4)
-                .setBackgroundColorResource(R.color.red)
-                .setText("5")
-                .setHideOnSelect(true);
+       // mTaskNumberBadgeItem = new BadgeItem()
+        //    .setBorderWidth(4)
+        //      .setBackgroundColorResource(R.color.red)
+        //   .setText("5")
+        // .setHideOnSelect(true);
 
         mTaskBtnItem.setBadgeItem(mTaskNumberBadgeItem);
 
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 .addItem(mTaskBtnItem)
                 .addItem(mContactsBtnItem)
                 .addItem(mUserMainBtnItem)
-                .setFirstSelectedPosition(2)//默认
+                .setFirstSelectedPosition(0)//默认
                 .initialise();
 
         mBottomNavigationBar.setTabSelectedListener(this);
@@ -105,16 +105,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
      */
     private void setDefaultFragment() {
         FragmentTransaction transaction = fManager.beginTransaction();
-        transaction.replace(R.id.layFrame, fragmentLists.get(2));//默认
+        transaction.add(R.id.layFrame, fragmentLists.get(0));//默认
         transaction.commit();
     }
 
     private ArrayList<Fragment> setFragments() {
         ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(fManager.findFragmentByTag(HomeFragment.class.getName()));
-        fragments.add(fManager.findFragmentByTag(TasksFragment.class.getName()));
-        fragments.add(fManager.findFragmentByTag(ContactsFragment.class.getName()));
-        fragments.add(fManager.findFragmentByTag(UserMainFragment.class.getName()));
+        fragments.add(fManager.findFragmentByTag("Home"));
+        fragments.add(fManager.findFragmentByTag("Records"));
+        fragments.add(fManager.findFragmentByTag("Contacts"));
+        fragments.add(fManager.findFragmentByTag("UserMain"));
         return fragments;
     }
 
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                     //   ft.replace(R.id.layFrame, fragment);
                     ft.show(fragment);
                 } else {
-                    ft.add(R.id.layFrame, fragment,fragment.getClass().getName());
+                    ft.add(R.id.layFrame, fragment);
                 }
                 ft.commitAllowingStateLoss();
                 switch (position){
@@ -149,8 +149,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                     case 1:
                         toolbar.setTitle(" 问题列表");
                         toolbar.setLogo(R.drawable.top_task);
-                        BadgeItem badgeItem = mTaskNumberBadgeItem.hide().setText("0");
-                        mTaskBtnItem.setBadgeItem(badgeItem);
+                      //  BadgeItem badgeItem = mTaskNumberBadgeItem.hide().setText("0");
+                       // mTaskBtnItem.setBadgeItem(badgeItem);
                         break;
                     case 2 :
                         toolbar.setTitle(" 联系人");

@@ -3,6 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -36,6 +37,15 @@
             android:text="具体描述"
             android:gravity="center"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey"/>
     </LinearLayout>
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"

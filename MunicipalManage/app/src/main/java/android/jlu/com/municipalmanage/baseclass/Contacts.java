@@ -1,5 +1,7 @@
 package android.jlu.com.municipalmanage.baseclass;
 
+import java.util.List;
+
 /**
  * <pre>
  *     author : qiuyudong
@@ -10,27 +12,60 @@ package android.jlu.com.municipalmanage.baseclass;
  * </pre>
  */
 public class Contacts {
-    String name;
-    String tel;
 
-    public Contacts(String name, String tel){
-        this.name = name;
-        this.tel = tel;
+    private List<EmpBeanBean> empBean;
+
+    public List<EmpBeanBean> getEmpBean() {
+        return empBean;
     }
 
-    public String getName() {
-        return name;
+    public void setEmpBean(List<EmpBeanBean> empBean) {
+        this.empBean = empBean;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public static class EmpBeanBean {
+        /**
+         * id : 0
+         * name : 未指派
+         * phone : 1
+         * title : 1
+         */
 
-    public String getTel() {
-        return tel;
-    }
+        private int id;
+        private String name;
+        private String phone;
+        private String title;
 
-    public void setTel(String tel) {
-        this.tel = tel;
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
     }
 }

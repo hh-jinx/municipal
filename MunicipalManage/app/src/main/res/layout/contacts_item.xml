@@ -1,34 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
               android:layout_width="match_parent"
               android:layout_height="50dp"
     >
 
     <TextView
         android:id="@+id/contacts_name"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
         android:gravity="center"
-        android:textSize="20dp"
-        android:layout_marginLeft="20dp"
+        android:textSize="18sp"
+        android:layout_marginLeft="10dp"
         android:textColor="#000"
         android:text="阿萨德"/>
+    <TextView
+        android:id="@+id/contacts_tilte"
+        android:layout_width="100dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:layout_marginRight="20dp"
+        android:text="职 位"/>
 
     <TextView
         android:id="@+id/contacts_tel"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="48dp"
         android:layout_gravity="end"
         android:gravity="center"
         android:layout_marginRight="30dp"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:text="123-3233-3232"
         />
+
     <View
-       android:layout_gravity="bottom|center"
+        android:layout_gravity="bottom|center"
         android:layout_width="350dp"
         android:layout_height="1dp"
         android:background="#CCCCCC"/>
-
 </FrameLayout>

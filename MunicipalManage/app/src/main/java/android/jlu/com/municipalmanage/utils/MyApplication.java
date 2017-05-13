@@ -19,7 +19,7 @@ public class MyApplication extends Application {
             Arrays.asList("道路", "人行步道", "边石", "排水", "路灯", "其他"));
 
     public static final List<String> roadLists1 = new ArrayList<>(
-            Arrays.asList("坑槽", "铣刨照面", "翻浆", "灌缝", "冷补料补垫", "临时补垫"));
+            Arrays.asList("坑槽", "铣刨罩面", "翻浆", "灌缝", "冷补料补垫", "临时补垫"));
 
     public static final List<String> walkLists2 = new ArrayList<>(
             Arrays.asList("方砖调整", "方砖更换", "火烧板更换", "火烧板调整", "界石调整",

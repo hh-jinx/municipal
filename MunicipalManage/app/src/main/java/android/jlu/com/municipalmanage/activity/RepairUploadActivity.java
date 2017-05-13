@@ -183,7 +183,7 @@ public class RepairUploadActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(RepairUploadActivity.this,"网络错误，请检查网络设置",Toast.LENGTH_SHORT).show();
+                Toast.makeText(RepairUploadActivity.this,"网络错误，请检查网络设置"+t.toString(),Toast.LENGTH_SHORT).show();
             }
         });
 
